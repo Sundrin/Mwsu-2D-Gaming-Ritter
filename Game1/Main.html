@@ -64,7 +64,7 @@ var mainState = {
 		// Display the time
 		this.timer = game.add.text(400, 30, 'time: 120',{ font: '18px Arial', fill: '#ffffff' });
 		// Initialize the time
-		this.time = 1000;
+		this.timeLeft = 120;
 		
 		//Display the deaths
 		this.death = game.add.text(400, 300, 'deaths: 0',{ font: '18px Arial', fill: '#ffffff' });
@@ -80,6 +80,7 @@ var mainState = {
 		    
         // Call 'addEnemy' every 2.2 seconds
         game.time.events.loop(2200, this.addEnemy, this);
+		game.time.events.loop(1000, this.gameTimer, this);
 		//this.enemies.scale.setTo(.05,.05)
     },
     createWorld: function() {
@@ -109,7 +110,6 @@ var mainState = {
         
         // We have to use 'this.' to call a function from our state
         this.movePlayer();
-		this.gameTimer();
         
         if (!this.player.inWorld) {
             this.playerDie();
@@ -195,9 +195,9 @@ var mainState = {
         enemy.outOfBoundsKill = true;
     },
 	gameTimer: function() {
-		this.time -= 1;
-		this.timer.text = 'time: ' + this.time;
-		if(this.time == -1)
+		this.timeLeft -= 1;
+		this.timer.text = 'time: ' + this.timeLeft;
+		if(this.timeLeft == -1)
 			game.state.stop('main')
 			
 	}
