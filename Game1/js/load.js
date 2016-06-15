@@ -9,7 +9,7 @@ var loadState = {
         game.load.setPreloadSprite(progressBar);
     
         game.load.image('player', 'assets/DragonbornPlayer.png');
-        game.load.image('enemy', 'assets/DragonbornEnemy.png');
+        game.load.image('enemy', 'assets/enemy.png');
         game.load.image('coin', 'assets/DragonbornEmblem.png');
         game.load.image('wallV', 'assets/wallVertical.png');
         game.load.image('wallH', 'assets/wallHorizontal.png');
