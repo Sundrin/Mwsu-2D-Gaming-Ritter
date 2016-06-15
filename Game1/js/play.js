@@ -6,28 +6,19 @@ var playState = {
         
         this.player = game.add.sprite(game.width/2, game.height/2, 'player');
 		this.player.scale.setTo(.05,.05);
-		this.player.body.height = 1;
         
         /**
          * Manipulating the anchor position of the added player, eventually 
          * we decide on centering it.
          */
-        // // Set the anchor point to the top left of the sprite (default value)
-        // this.player.anchor.setTo(0, 0);
-        // // Set the anchor point to the top right
-        // this.player.anchor.setTo(.01, 0);
-        // // Set the anchor point to the bottom left
-        // this.player.anchor.setTo(0, .01);
-        // // Set the anchor point to the bottom right
-        // this.player.anchor.setTo(.01, .01);
-        
-        // this.player.anchor.setTo(0.1, 0.5);
+        // set the anchor point to the top left of the sprite (default value)
+        this.player.anchor.setTo(0.5, 0.5); 
         
         // Tell Phaser that the player will use the Arcade physics engine
-        game.physics.arcade.enable(this.player);
+        game.physics.arcade.enable(this.player); 
         // Add vertical gravity to the player
         this.player.body.gravity.y = 500;
-        
+		
         this.cursor = game.input.keyboard.createCursorKeys();
         
         this.createWorld();
