@@ -1,43 +1,27 @@
-var mainState = {
-    preload: function() {
-        game.load.image('player', 'assets/DragonbornPlayer.png');
-        game.load.image('wallV', 'assets/wallVertical.png');
-        game.load.image('wallH', 'assets/wallHorizontal.png');
-        game.load.image('coin', 'assets/DragonbornEmblem.png');
-        game.load.image('enemy', 'assets/enemy.png');
-    },
-
+var playState = {
     create: function() { 
-        
-        //1. Change the background color of the game
-        game.stage.backgroundColor = '#3498db';
-        
-        //2. Tell phaser we are going to use arcade physics for this game
-        game.physics.startSystem(Phaser.Physics.ARCADE);
-        
-        //3. Crisper images when using pixel art
-        game.renderer.renderSession.roundPixels = true;
         
         // Create a local variable with 'var player'
         //this.player = game.add.sprite(250, 170, 'player');
         
         this.player = game.add.sprite(game.width/2, game.height/2, 'player');
-		this.player.scale.setTo(.05,.05)
+		this.player.scale.setTo(.05,.05);
+		this.player.body.height = 1;
         
         /**
          * Manipulating the anchor position of the added player, eventually 
          * we decide on centering it.
          */
-        // Set the anchor point to the top left of the sprite (default value)
-        this.player.anchor.setTo(0, 0);
-        // Set the anchor point to the top right
-        this.player.anchor.setTo(.01, 0);
-        // Set the anchor point to the bottom left
-        this.player.anchor.setTo(0, .01);
-        // Set the anchor point to the bottom right
-        this.player.anchor.setTo(.01, .01);
+        // // Set the anchor point to the top left of the sprite (default value)
+        // this.player.anchor.setTo(0, 0);
+        // // Set the anchor point to the top right
+        // this.player.anchor.setTo(.01, 0);
+        // // Set the anchor point to the bottom left
+        // this.player.anchor.setTo(0, .01);
+        // // Set the anchor point to the bottom right
+        // this.player.anchor.setTo(.01, .01);
         
-        this.player.anchor.setTo(0.1, 0.5);
+        // this.player.anchor.setTo(0.1, 0.5);
         
         // Tell Phaser that the player will use the Arcade physics engine
         game.physics.arcade.enable(this.player);
@@ -50,7 +34,8 @@ var mainState = {
         
         // Display the coin
         this.coin = game.add.sprite(game.world.randomX, game.world.randomY, 'coin');
-		this.coin.scale.setTo(.05,.05)
+		this.coin.scale.setTo(.05,.05);
+
         // Add Arcade physics to the coin
         game.physics.arcade.enable(this.coin);
         // Set the anchor point to its center
@@ -59,12 +44,12 @@ var mainState = {
         // Display the score
         this.scoreLabel = game.add.text(30, 30, 'score: 0',{ font: '18px Arial', fill: '#ffffff' });
         // Initialize the score
-        this.score = 0;
+        game.global.score = 0;
 		
 		// Display the time
 		this.timer = game.add.text(400, 30, 'time: 120',{ font: '18px Arial', fill: '#ffffff' });
 		// Initialize the time
-		this.timeLeft = 120;
+		this.timeLeft = 10;
 		
 		//Display the deaths
 		this.death = game.add.text(400, 300, 'deaths: 0',{ font: '18px Arial', fill: '#ffffff' });
@@ -148,8 +133,8 @@ var mainState = {
     },
     takeCoin: function(player, coin) {
         // Update the score
-        this.score += 5;
-        this.scoreLabel.text = 'score: ' + this.score;
+        game.global.score += 5;
+        this.scoreLabel.text = 'score: ' + game.global.score;
         // Change the coin position
         this.updateCoinPosition();
     },
@@ -198,11 +183,6 @@ var mainState = {
 		this.timeLeft -= 1;
 		this.timer.text = 'time: ' + this.timeLeft;
 		if(this.timeLeft == -1)
-			game.state.stop('main')
-			
+			game.state.start('menu')
 	}
 };
-
-var game = new Phaser.Game(500, 340, Phaser.AUTO, 'gameDiv');
-game.state.add('main', mainState);
-game.state.start('main');
