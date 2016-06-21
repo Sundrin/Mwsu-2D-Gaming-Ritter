@@ -14,6 +14,7 @@ SpaceHipster.Game.prototype = {
     //create player
     this.player = this.game.add.sprite(this.game.world.centerX, this.game.world.centerY, 'playership');
     this.player.scale.setTo(2);
+	this.player.anchor.setTo(0.5, 0.5);
     this.player.animations.add('fly', [0, 1, 2, 3], 5, true);
     this.player.animations.play('fly');
 
@@ -22,6 +23,7 @@ SpaceHipster.Game.prototype = {
 
     //enable player physics
     this.game.physics.arcade.enable(this.player);
+	this.player.body.drag.set(100);
     this.playerSpeed = 120;
     this.player.body.collideWorldBounds = true;
 	
@@ -55,14 +57,28 @@ SpaceHipster.Game.prototype = {
     this.collectSound = this.game.add.audio('collect');
   },
   update: function() {
-    if(this.game.input.activePointer.justPressed()) {
-      
-      //move on the direction of the input
-      this.game.physics.arcade.moveToPointer(this.player, this.playerSpeed);
-    }
+	  if (this.cursors.left.isDown) {
+		  this.player.body.angularVelocity = -200;
+	  }
+	  else if (this.cursors.right.isDown) {
+		  this.player.body.angularVelocity = 200;
+	  }
+	  else {
+		  this.player.body.angularVelocity = 0;
+	  }
+	  
+	  if (this.cursors.up.isDown) {
+		  this.game.physics.arcade.accelerationFromRotation(this.player.rotation, 200, this.player.body.acceleration);
+	  }
+	  else {
+		  this.player.body.acceleration.set(0);
+	  }
 
     //collision between player and asteroids
     this.game.physics.arcade.collide(this.player, this.asteroids, this.hitAsteroid, null, this);
+	
+	//Bullet collision with asteroid
+	this.game.physics.arcade.collide(this.bullets, this.asteroids, this.destroyAsteroid, null, this);
 
     //overlapping between player and collectables
     this.game.physics.arcade.overlap(this.player, this.collectables, this.collect, null, this);
@@ -95,7 +111,8 @@ SpaceHipster.Game.prototype = {
 	  // Initialize the bullet
 	  bullet.anchor.setTo(0.5, 1);
 	  bullet.reset(this.player.x, this.player.y);
-	  bullet.body.velocity.x = 100;
+	  bullet.rotation = this.player.rotation + 50.2;
+	  this.game.physics.arcade.velocityFromRotation(this.player.rotation, 400, bullet.body.velocity);
 	  bullet.checkWorldBounds = true;
 	  bullet.outOfBoundsKill = true;
 	  
@@ -136,6 +153,18 @@ SpaceHipster.Game.prototype = {
     this.player.kill();
 
     this.game.time.events.add(800, this.gameOver, this);
+  },
+  destroyAsteroid: function(bullet, asteroid) {
+	  //asteroid explosion
+	  this.explosionSound.play();
+	  var emitter = this.game.add.emitter(asteroid.x, asteroid.y, 100);
+      emitter.makeParticles('playerParticle');
+      emitter.minParticleSpeed.setTo(-200, -200);
+      emitter.maxParticleSpeed.setTo(200, 200);
+      emitter.gravity = 0;
+	  emitter.start(true, 1000, null, 100);
+	  asteroid.kill();
+	  bullet.kill();
   },
   gameOver: function() {    
     //pass it the score as a parameter 
