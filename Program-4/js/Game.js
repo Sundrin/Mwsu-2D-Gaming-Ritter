@@ -24,6 +24,14 @@ SpaceHipster.Game.prototype = {
     this.game.physics.arcade.enable(this.player);
     this.playerSpeed = 120;
     this.player.body.collideWorldBounds = true;
+	
+	//create bullet
+	this.bullets = this.game.add.group();
+	this.bullets.enableBody = true;
+	this.bullets.physicsBodyType = Phaser.Physics.ARCADE;
+	this.bullets.createMultiple(10, 'bullet');
+	this.bullets.setAll('checkWorldBounds', true);
+	this.bullets.setAll('outOfBoundsKill', true);
 
     //the camera will follow the player in the world
     this.game.camera.follow(this.player);
@@ -34,6 +42,12 @@ SpaceHipster.Game.prototype = {
 
     //show score
     this.showLabels();
+	
+	//controls
+	this.cursors = this.game.input.keyboard.createCursorKeys();
+	this.shootKey = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+	//call shoot bullet function
+	this.shootKey.onDown.add(this.shootBullet, this);
 
     //sounds
     this.explosionSound = this.game.add.audio('explosion');
@@ -71,6 +85,20 @@ SpaceHipster.Game.prototype = {
       collectable.animations.play('fly');
     }
 
+  },
+  //Based on addEnemy function from other game
+  shootBullet: function() {
+	  var bullet = this.bullets.getFirstDead();
+	  if (!bullet) {
+		  return;
+	  }
+	  // Initialize the bullet
+	  bullet.anchor.setTo(0.5, 1);
+	  bullet.reset(this.player.x, this.player.y);
+	  bullet.body.velocity.x = 100;
+	  bullet.checkWorldBounds = true;
+	  bullet.outOfBoundsKill = true;
+	  
   },
   generateAsteriods: function() {
     this.asteroids = this.game.add.group();
